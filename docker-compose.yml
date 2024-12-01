@@ -1,0 +1,30 @@
+services:
+  php-container:
+    build:
+      context: .
+      dockerfile: php-phalcon/Dockerfile
+    volumes:
+      - ./tutorial:/var/www/html # Пробрасываем директорию с проектом
+      - ~/.composer:/root/.composer # Кеш Composer
+    ports:
+      - "9000:9000"
+    networks:
+      - phalcon-net
+
+  nginx-container:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    volumes:
+      - ./tutorial:/var/www/html # Общая директория с проектом
+    ports:
+      - "8080:8080"
+    depends_on:
+      - php-container
+    networks:
+      - phalcon-net
+
+networks:
+  phalcon-net:
+    driver: bridge
+
